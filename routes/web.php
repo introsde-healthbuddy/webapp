@@ -11,6 +11,9 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::resource('/', 'HomeController');
+Route::resource('health-monitor', 'HealthMonitorController');
+Route::resource('nutrition', 'NutritionController');
+Route::resource('activities', 'ActivityController');
+Route::resource('goals', 'GoalController');
+Route::resource('settings', 'SettingsController');
