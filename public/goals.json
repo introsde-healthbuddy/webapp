@@ -1,0 +1,25 @@
+{
+  "goals": [
+    {
+      "goalId": 1,
+      "name": "My First Goal",
+      "type": "Health",
+      "description": "Some description here",
+      "deadline": "2016-12-31T23:00:00.000Z"
+    },
+    {
+      "goalId": 2,
+      "name": "My Second Goal",
+      "type": "Health",
+      "description": "Some description here",
+      "deadline": "2016-12-31T23:00:00.000Z"
+    },
+    {
+      "goalId": 3,
+      "name": "My Third Goal",
+      "type": "Health",
+      "description": "Some description here",
+      "deadline": "2016-12-31T23:00:00.000Z"
+    }
+  ]
+}

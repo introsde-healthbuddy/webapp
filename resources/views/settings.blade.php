@@ -11,9 +11,7 @@
             	
             </span>
 
-            <ol class="breadcrumb page-head-nav">
-              <p style="font-weight: 300; font-size: 14px;">Some motivational bullshit here</p>
-            </ol>
+            @include('partials.quote')
 	</div>
 </div>
 

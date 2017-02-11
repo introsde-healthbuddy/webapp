@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Client;
 
 class ActivityController extends Controller
 {
@@ -13,7 +15,12 @@ class ActivityController extends Controller
      */
     public function index()
     {
-        return view('activities');
+        $endpoint = env('API_ACTIVITY');
+        $client = new Client();
+        $response = $client->get($endpoint, ['headers' => ['Accept' => 'application/json']]);
+        $activities = json_decode($response->getBody()->getContents());
+        return view('activities', ['activities' => $activities]);
+
     }
 
     /**

@@ -11,9 +11,9 @@
             	<a href="create-goal.php" class="btn btn-space btn-primary btn-lg"> Create Goal &nbsp;<i class="icon icon-left mdi mdi-plus"></i></a>
             </span>
 
-            <ol class="breadcrumb page-head-nav">
-              <p style="font-weight: 300; font-size: 14px;">Some motivational bullshit here</p>
-            </ol>
+            
+
+            @include('partials.quote')
 	</div>
 </div>
 
@@ -42,7 +42,8 @@
                 </tr>
               </thead>
               <tbody>
-                <?php for($i=0; $i<5; $i++){ ?>
+                @foreach ($goals as $goal)
+
                 <tr>
                   <td>
                     <div class="be-checkbox be-checkbox-sm">
@@ -50,8 +51,8 @@
                       <label for="check2"></label>
                     </div>
                   </td>
-                  <td class="cell-detail"><span>Loose weight</span></td>
-                  <td class="cell-detail"> <span>Health</span></td>
+                  <td class="cell-detail"><span>{{ $goal->name }}</span></td>
+                  <td class="cell-detail"> <span>{{ $goal->type }}</span></td>
                   <td class="milestone">
                     <div class="progress">
                       <div style="width: 45%" class="progress-bar progress-bar-primary"></div>
@@ -72,7 +73,11 @@
                     </div>
                   </td>
                 </tr>
-                <?php } ?>
+                    
+                @endforeach
+                
+                
+               
               </tbody>
             </table>
           </div>

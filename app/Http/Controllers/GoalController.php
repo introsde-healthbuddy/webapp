@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Client;
 
 class GoalController extends Controller
 {
@@ -13,7 +15,13 @@ class GoalController extends Controller
      */
     public function index()
     {
-        return view('goals');
+        $endpoint = env('API_GOAL');
+        $client = new Client();
+        $response = $client->get($endpoint, ['headers' => ['Accept' => 'application/json']]);
+        $goals = json_decode($response->getBody()->getContents());
+        return view('goals', ['goals' => $goals]);
+
+
     }
 
     /**
