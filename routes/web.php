@@ -23,5 +23,6 @@ Route::resource('goals', 'GoalController');
 Route::resource('settings', 'SettingsController');
 Route::get('home', 'HealthMonitorController@index');
 Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
+Route::post('/nutrition/search', 'NutritionController@search');
 
 });
