@@ -15,7 +15,7 @@ public static function fetchQuote() {
 
 		$endpoint = env('API_QUOTE');
 	    $client = new Client();
-	    $response = $client->get($endpoint, ['connect_timeout' => 1]);
+	    $response = $client->get($endpoint, ['connect_timeout' => 1 , 'verify' => false]);
 	    $quote = json_decode($response->getBody()->getContents());
 
 	    if (!(is_null($quote)))
