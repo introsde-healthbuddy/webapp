@@ -55,6 +55,7 @@
 
           </div>
 
+          <!--
            <div class="row">
           	
           	<div class="col-md-6">
@@ -116,7 +117,7 @@
             </div>
 
 
-          </div>
+          </div>!-->
 
           </div>
       </div>
@@ -244,7 +245,7 @@ var myChart = new Chart(ctx, {
 var ctx = document.getElementById("myChart3");
 
 var data = {
-    labels: ["January"],
+    labels: [""],
     datasets: [
         {
             label: "Height (cm)",
