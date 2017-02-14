@@ -170,7 +170,7 @@ var data = {
             pointHoverBorderWidth: 2,
             pointRadius: 5,
             pointHitRadius: 10,
-            data: [80, 78, 79, 76, 74, 70, 71, 72, 72, 73, 71, 70],
+            data: [80, 78, 0, 76, 74, 70, 0, 72, 72, 73, 0, 70],
             spanGaps: false,
         }
     ]
@@ -218,7 +218,7 @@ var data = {
             pointHoverBorderWidth: 2,
             pointRadius: 5,
             pointHitRadius: 10,
-            data: [177, 177, 177, 177, 177.5, 177.5, 177.5, 178, 178, 178, 178, 178],
+            data: [177, 0, 0, 0, 177.5, 177.5, 177.5, 0, 178, 178, 0, 178],
             spanGaps: false,
         }
     ]
@@ -266,7 +266,7 @@ var data = {
             pointHoverBorderWidth: 2,
             pointRadius: 5,
             pointHitRadius: 10,
-            data: [177, 177, 177, 177, 177.5, 177.5, 177.5, 178, 178, 178, 178, 178],
+            data: [177, 0, 177, 0, 177.5, 177.5, 177.5, 0, 178, 178, 0, 178],
             spanGaps: false,
         }
     ]

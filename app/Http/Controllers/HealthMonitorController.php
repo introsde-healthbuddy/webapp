@@ -6,6 +6,31 @@ use Illuminate\Http\Request;
 
 class HealthMonitorController extends Controller
 {
+    private function getHealthMeasures()
+    {
+        try{
+
+            $userId = \DB::table('user_mapping')->where('user_id_php', \Auth::user()->id)->value('user_id_java');;
+
+            $endpoint = 'https://healthbuddy-businesslogic.herokuapp.com/introsde/businessLogic/getHealthMeasures';
+            $client = new Client();
+            $response = $client->get($endpoint);
+
+            $goals = json_decode($response->getBody()->getContents());
+            //dd($goals);
+            return $goals;
+
+        }
+        catch(GuzzleException $e){
+
+            \Session::flash('message', $e->getMessage()); 
+            \Session::flash('alert-class', 'alert-danger'); 
+
+           return false;
+        }
+
+    }
+
     /**
      * Display a listing of the resource.
      *

@@ -63,14 +63,26 @@
 
 @section('footer')
 <script src="{{ URL::asset('assets/lib/masonry/masonry.pkgd.min.js') }}"></script>
+<script src="https://npmcdn.com/imagesloaded@4.1/imagesloaded.pkgd.min.js"></script>
 <script>
 $(document).ready(function(){
 
-$('.grid').masonry({
-  // options
-  itemSelector: '.grid-item',
+// $('.grid').masonry({
+//   // options
+//   itemSelector: '.grid-item',
+//   columnWidth: 300,
+//   gutter: 25
+// });
+
+var $grid = $('.grid').imagesLoaded( function() {
+// init Masonry after all images have loaded
+$grid.masonry({
   columnWidth: 300,
+  itemSelector: '.grid-item',
   gutter: 25
+});
+console.log('got here');
+    $('.grid').animate({'opacity':1});
 });
 
 })

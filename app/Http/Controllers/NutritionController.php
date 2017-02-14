@@ -8,6 +8,7 @@ use GuzzleHttp\Client;
 
 class NutritionController extends Controller
 {
+    
     /**
      * Display a listing of the resource.
      *
