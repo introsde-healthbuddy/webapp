@@ -4,8 +4,24 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Client;
+
 class HomeController extends Controller
 {
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        //dd(\Auth::user());
+        $this->middleware('auth');
+
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -13,6 +29,12 @@ class HomeController extends Controller
      */
     public function index()
     {
+
+        
+        //dd($this->getUserDetails(\Helper::getJavaId()));
+
+
+
         return view('home');
     }
 
@@ -80,5 +102,30 @@ class HomeController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    private function getUserDetails($userId)
+    {
+        try{
+
+            $userId = 1;
+
+            $endpoint = 'https://healthbuddy-businesslogic.herokuapp.com/introsde/businessLogic/getPersonDetails';
+            $client = new Client();
+            $response = $client->get($endpoint);
+
+            $user = json_decode($response->getBody()->getContents());
+            //dd($goals);
+            return $user;
+
+        }
+        catch(GuzzleException $e){
+
+            \Session::flash('message', $e->getMessage()); 
+            \Session::flash('alert-class', 'alert-danger'); 
+
+           return false;
+        }
+
     }
 }

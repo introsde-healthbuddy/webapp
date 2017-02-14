@@ -15,7 +15,7 @@
 	</div>
 </div>
 
-
+@include('partials.errors')
 
 
 @stop

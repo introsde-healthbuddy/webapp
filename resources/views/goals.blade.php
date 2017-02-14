@@ -8,7 +8,7 @@
             <h2 class="page-head-title" style="display:inline;">Goals</h2>
 
             <span style="float:right; padding-top:10px;">
-            	<a href="create-goal.php" class="btn btn-space btn-primary btn-lg"> Create Goal &nbsp;<i class="icon icon-left mdi mdi-plus"></i></a>
+            	<a href="{{ action('GoalController@create') }}" class="btn btn-space btn-primary btn-lg"> Create Goal &nbsp;<i class="icon icon-left mdi mdi-plus"></i></a>
             </span>
 
             
@@ -23,52 +23,49 @@
       <div class="panel panel-default panel-table be-custom-panel">
         
         <div class="panel-body">
+
+          @include('partials.errors')
+
+          <?php if($goals){ ?>
+
           <div class="table-responsive noSwipe">
             <table class="table table-striped table-hover">
               <thead>
                 <tr>
-                  <th style="width:5%;">
-                    <div class="be-checkbox be-checkbox-sm">
-                      <input id="check1" type="checkbox">
-                      <label for="check1"></label>
-                    </div>
-                  </th>
                   <th style="width:40%;">Goal</th>
                   <th style="width:15%;">Type</th>
-                  <th style="width:25%;">Milestone</th>
+                  <th style="width:25%;">Description</th>
                   
-                  <th style="width:10%;">Date</th>
-                  <th style="width:10%;"></th>
+                  <th style="width:10%;">Deadline</th>
+                  <th style="width:10%;">Completed</th>
                 </tr>
               </thead>
               <tbody>
                 @foreach ($goals as $goal)
 
                 <tr>
-                  <td>
-                    <div class="be-checkbox be-checkbox-sm">
-                      <input id="check2" type="checkbox">
-                      <label for="check2"></label>
-                    </div>
-                  </td>
                   <td class="cell-detail"><span>{{ $goal->name }}</span></td>
                   <td class="cell-detail"> <span>{{ $goal->type }}</span></td>
-                  <td class="milestone">
-                    <div class="progress">
-                      <div style="width: 45%" class="progress-bar progress-bar-primary"></div>
-                    </div>
-                  </td>
-                 
-                  <td class="cell-detail"><span>May 6, 2016</span></td>
+                  <td class="cell-detail">{{ $goal->description }}</td>
+                  <td class="cell-detail"><span>{{ $goal->expiry}}</span></td>
+                  <td class="cell-detail"><span><?php if($goal->completed){ echo 'Yes';}else{echo 'No';} ?></span></td>
                   <td class="text-right">
                     <div class="btn-group btn-hspace">
                       <button type="button" data-toggle="dropdown" class="btn btn-default dropdown-toggle">Manage <span class="icon-dropdown mdi mdi-chevron-down"></span></button>
                       <ul role="menu" class="dropdown-menu pull-right">
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#">Separated link</a></li>
+                        <li><a href="{{action('GoalController@edit', $goal->id)}}">Edit</a></li>
+                        <li>
+<form action="{{action('GoalController@destroy', $goal->id)}}" method="POST" style="display:inline-block;">
+          {!! csrf_field() !!}
+          {{ method_field('DELETE') }}
+
+          <input type="submit" style="background: white;
+    border: 0;
+    padding: 5px 0 0 20px;" value="Delete">
+        </form>
+
+
+                        </li>
                       </ul>
                     </div>
                   </td>
@@ -81,6 +78,13 @@
               </tbody>
             </table>
           </div>
+
+          <?php }
+                else{ ?>
+
+
+
+               <?php } ?>
         </div>
       </div>
     </div>

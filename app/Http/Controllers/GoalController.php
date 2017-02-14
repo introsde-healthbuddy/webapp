@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
 
+use App\Goal;
+
 class GoalController extends Controller
 {
     /**
@@ -13,14 +15,37 @@ class GoalController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    private function getGoals()
+    {
+        try{
+
+            $userId = \DB::table('user_mapping')->where('user_id_php', \Auth::user()->id)->value('user_id_java');;
+
+            $endpoint = 'https://healthbuddy-businesslogic.herokuapp.com/introsde/businessLogic/getGoals';
+            $client = new Client();
+            $response = $client->get($endpoint);
+
+            $goals = json_decode($response->getBody()->getContents());
+            //dd($goals);
+            return $goals;
+
+        }
+        catch(GuzzleException $e){
+
+            \Session::flash('message', $e->getMessage()); 
+            \Session::flash('alert-class', 'alert-danger'); 
+
+           return false;
+        }
+
+    }
+
+
     public function index()
     {
-        $endpoint = env('API_GOAL');
-        $client = new Client();
-        $response = $client->get($endpoint, ['headers' => ['Accept' => 'application/json']]);
-        $goals = json_decode($response->getBody()->getContents());
-        return view('goals', ['goals' => $goals]);
 
+        $goals = \DB::select('SELECT * FROM goals WHERE user_id = :user_id ORDER BY expiry', ['user_id' => \Auth::user()->id]);
+        return view('goals', ['goals' => $goals]);
 
     }
 
@@ -31,7 +56,9 @@ class GoalController extends Controller
      */
     public function create()
     {
-        //
+        
+
+        return view('goals-create-form');
     }
 
     /**
@@ -42,7 +69,31 @@ class GoalController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+
+            'name' => 'required',
+            'type' => 'required',
+            'description' => 'required',
+            'expiry' => 'required',
+            'completed' => 'required'
+        ]);
+
+        $input['name'] = $request->input('name');
+        $input['type'] = $request->input('type');
+        $input['description'] = $request->input('description');
+        $input['expiry'] = $request->input('expiry');
+        $input['completed'] = $request->input('completed');
+        $input['user_id'] = \Auth::user()->id;
+
+
+
+        \App\Goal::create($input);
+
+        \Session::flash('alert-class', 'alert-success'); 
+        return \Redirect::action('GoalController@index')->with('message', 'Goal successfully created.');
+
+
+
     }
 
     /**
@@ -53,7 +104,7 @@ class GoalController extends Controller
      */
     public function show($id)
     {
-        //
+        
     }
 
     /**
@@ -64,7 +115,8 @@ class GoalController extends Controller
      */
     public function edit($id)
     {
-        //
+        $goal = \App\Goal::find( $id );
+        return view('goals-edit-form', ['goal' => $goal]);
     }
 
     /**
@@ -76,7 +128,32 @@ class GoalController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+
+            'name' => 'required',
+            'type' => 'required',
+            'description' => 'required',
+            'expiry' => 'required',
+            'completed' => 'required'
+        ]);
+
+        $goal = \App\Goal::find( $id );
+
+        $goal->name = $request->input('name');
+        $goal->type = $request->input('type');
+        $goal->description = $request->input('description');
+        $goal->expiry = $request->input('expiry');
+        $goal->completed = $request->input('completed');
+        $goal->user_id = \Auth::user()->id;
+
+        $goal->save();
+
+        \Session::flash('alert-class', 'alert-success'); 
+        return \Redirect::action('GoalController@index')->with('message', 'Goal updated deleted.'); 
+
+
+
+
     }
 
     /**
@@ -87,6 +164,10 @@ class GoalController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $goal = \App\Goal::find( $id );
+        $goal->delete();
+
+        \Session::flash('alert-class', 'alert-success'); 
+        return \Redirect::action('GoalController@index')->with('message', 'Goal successfully deleted.'); 
     }
 }
