@@ -8,7 +8,7 @@
           <ul role="menu" class="dropdown-menu">
             <li>
               <div class="user-info">
-                <div class="user-name">{{ Auth::user()->firstname}}</div>
+                <div class="user-name">{{ Auth::user()->firstname }} - {{ Auth::user()->foreign_id }}</div>
 
               </div>
             </li>
