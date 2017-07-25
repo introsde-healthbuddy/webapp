@@ -7,6 +7,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Client;
+
 class RegisterController extends Controller
 {
     /*
@@ -48,9 +51,12 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|max:255',
+            'firstname' => 'required|max:255',
+            'lastname' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|min:6|confirmed',
+            'birthdate' => 'required'
+
         ]);
     }
 
@@ -62,10 +68,52 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        //dd($data);
+
+        /* send a post request to heroku process centric and get new person id */
+        $foreign_id = $this->createForeignUser($data);
+
         return User::create([
-            'name' => $data['name'],
+            'firstname' => $data['firstname'],
+            'lastname' => $data['lastname'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
+            'foreign_id' => $foreign_id
         ]);
+    }
+
+    public function createForeignUser(array $data)
+    {
+        try{
+            $endpoint = env('PROCESS_CENTRIC_ENDPOINT');
+
+            $client = new Client(['base_uri' => $endpoint]);
+
+            $body = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><person></person>');
+            $body->addChild('firstname', $data['firstname']);
+            $body->addChild('lastname', $data['lastname']);
+            $body->addChild('email', $data['email']);
+            $body->addChild('birthdate', $data['birthdate']);
+            $body = $body->asXML();
+
+            $response = $client->request('POST', '/person', [
+                'headers' => ['Content-Type' => 'application/xml'],
+                'timeout' => 120,
+                'body' => $body
+            ]);
+
+            if($response->getStatusCode() == 200)
+            {
+                $response = simplexml_load_string($response->getBody()->getContents());
+                return (string)$response->idPerson;
+            }
+
+            //dd('Error: '.$response);
+            abort(403, 'Error :'.$response);
+        }
+        catch(GuzzleException $e){
+            return $e->getMessage();
+        }
+
     }
 }

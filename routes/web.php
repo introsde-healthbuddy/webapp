@@ -26,3 +26,5 @@ Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 Route::post('/nutrition/search', 'NutritionController@search');
 
 });
+
+Route::get('/boo', '\App\Http\Controllers\Auth\RegisterController@createForeignUser');

@@ -7,9 +7,9 @@
         <div class="main-content container-fluid">
           <div class="splash-container">
             <div class="panel panel-default panel-border-color panel-border-color-primary">
-              <div class="panel-heading"><span class="splash-description">Please enter your user information.</span></div>
+              <div class="panel-heading" style="    margin-bottom: 0;"><span style="font-size:24px;">Health Buddy</span></div>
               <div class="panel-body">
-                <form method="POST" action="{{ url('/login') }}">
+                <form method="POST" action="{{ url('/login') }}"><span class="splash-title xs-pb-20">Login</span>
                     {{ csrf_field() }}
                   <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
 
@@ -22,7 +22,7 @@
                                 @endif
                   </div>
                   <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                    
+
                     <input id="password" type="password" class="form-control" name="password" required placeholder="Password">
 
                                 @if ($errors->has('password'))
@@ -43,12 +43,14 @@
                                 </a></div>
                   </div>
                   <div class="form-group login-submit">
-                    <button data-dismiss="modal" type="submit" class="btn btn-primary btn-xl">Sign me in</button>
+                    <button data-dismiss="modal" type="submit" class="btn btn-primary btn-xl">Login</button>
+                    <div>&nbsp;</div>
+                    <a href="{{ url('/register') }}" data-dismiss="modal" class="btn btn-default btn-xl">Register</a>
                   </div>
                 </form>
               </div>
             </div>
-            
+
           </div>
         </div>
       </div>

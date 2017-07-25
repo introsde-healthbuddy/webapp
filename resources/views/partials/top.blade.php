@@ -8,8 +8,8 @@
           <ul role="menu" class="dropdown-menu">
             <li>
               <div class="user-info">
-                <div class="user-name">{{ Auth::user()->name}}</div>
-                
+                <div class="user-name">{{ Auth::user()->firstname}}</div>
+
               </div>
             </li>
             <li><a href="{{action('SettingsController@index')}}"><span class="icon mdi mdi-settings"></span> Settings</a></li>
@@ -17,7 +17,7 @@
           </ul>
         </li>
       </ul>
-      
+
 
     </div>
   </div>
