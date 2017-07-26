@@ -8,7 +8,7 @@
             <h2 class="page-head-title" style="display:inline;">Health Monitor</h2>
 
             <span style="float:right; padding-top:10px;">
-            	
+
             </span>
 
             @include('partials.quote')
@@ -19,21 +19,21 @@
 
     <div class="col-sm-12">
       <div class="panel panel-default panel-table be-custom-panel">
-        
+
         <div class="panel-body">
 
           @include('partials.errors')
 
           <div class="row">
-          	
+
           	<div class="col-md-6">
                         <div class="widget">
                           <div class="widget-head">
-                            <span class="title">Heath Measure History - Weight</span>
+                            <span class="title">Weight</span>
                           </div>
                           <div class="widget-chart-container">
-                            
-                            
+
+
                             <canvas id="myChart" style="width:100%; height:500px;" height="200"></canvas>
                           </div>
                         </div>
@@ -42,11 +42,11 @@
             <div class="col-md-6">
                         <div class="widget">
                           <div class="widget-head">
-                            <span class="title">Heath Measure History - Height</span>
+                            <span class="title">Height</span>
                           </div>
                           <div class="widget-chart-container">
-                            
-                            
+
+
                             <canvas id="myChart2" style="width:100%; height:500px;" height="200"></canvas>
                           </div>
                         </div>
@@ -57,15 +57,15 @@
 
           <!--
            <div class="row">
-          	
+
           	<div class="col-md-6">
                         <div class="widget">
                           <div class="widget-head">
                             <span class="title">Heath Measure History - Blood Pressure</span>
                           </div>
                           <div class="widget-chart-container">
-                            
-                            
+
+
                             <canvas id="myChart3" style="width:100%; height:500px;" height="200"></canvas>
                           </div>
                         </div>
@@ -77,8 +77,8 @@
                             <span class="title">Heath Measure History - BMI</span>
                           </div>
                           <div class="widget-chart-container">
-                            
-                            
+
+
                             <canvas id="myChart4" style="width:100%; height:500px;" height="200"></canvas>
                           </div>
                         </div>
@@ -89,15 +89,15 @@
 
 
            <div class="row">
-          	
+
           	<div class="col-md-6">
                         <div class="widget">
                           <div class="widget-head">
                             <span class="title">Heath Measure History - Sleeping Hours</span>
                           </div>
                           <div class="widget-chart-container">
-                            
-                            
+
+
                             <canvas id="myChart5" style="width:100%; height:500px;" height="200"></canvas>
                           </div>
                         </div>
@@ -109,8 +109,8 @@
                             <span class="title">Heath Measure History - Heart Rate</span>
                           </div>
                           <div class="widget-chart-container">
-                            
-                            
+
+
                             <canvas id="myChart6" style="width:100%; height:500px;" height="200"></canvas>
                           </div>
                         </div>
@@ -132,7 +132,7 @@
 @section('footer')
 
     <script src="{{ URL::asset('assets/lib/chartjs/Chart.min.js') }}" type="text/javascript"></script>
-    
+
 
     <script type="text/javascript">
       $(document).ready(function(){
@@ -140,7 +140,7 @@
       	App.init();
 
 
-      	
+
       });
     </script>
 

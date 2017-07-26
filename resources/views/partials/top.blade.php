@@ -12,7 +12,7 @@
 
               </div>
             </li>
-            <li><a href="{{action('SettingsController@index')}}"><span class="icon mdi mdi-settings"></span> Settings</a></li>
+            <li><a href="{{action('SettingsController@index')}}"><span class="icon mdi mdi-settings"></span> Profile</a></li>
             <li><a href="{{url('/logout')}}"><span class="icon mdi mdi-power"></span> Logout</a></li>
           </ul>
         </li>

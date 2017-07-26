@@ -73,13 +73,21 @@ class RegisterController extends Controller
         /* send a post request to heroku process centric and get new person id */
         $foreign_id = $this->createForeignUser($data);
 
-        return User::create([
-            'firstname' => $data['firstname'],
-            'lastname' => $data['lastname'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-            'foreign_id' => $foreign_id
-        ]);
+        if(is_int($foreign_id))
+        {
+            return User::create([
+                'firstname' => $data['firstname'],
+                'lastname' => $data['lastname'],
+                'email' => $data['email'],
+                'password' => bcrypt($data['password']),
+                'foreign_id' => $foreign_id
+            ]);
+
+        }
+
+        abort(403, 'Error :'.$foreign_id);
+
+
     }
 
     public function createForeignUser(array $data)
@@ -105,11 +113,11 @@ class RegisterController extends Controller
             if($response->getStatusCode() == 200)
             {
                 $response = simplexml_load_string($response->getBody()->getContents());
-                return (string)$response->idPerson;
+                return (int)$response->idPerson;
             }
 
-            //dd('Error: '.$response);
-            abort(403, 'Error :'.$response);
+            dd('Error: '.$response);
+            //abort(403, 'Error :'.$response);
         }
         catch(GuzzleException $e){
             return $e->getMessage();

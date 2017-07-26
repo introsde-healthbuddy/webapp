@@ -20,9 +20,10 @@ Route::resource('health-monitor', 'HealthMonitorController');
 Route::resource('nutrition', 'NutritionController');
 Route::resource('activities', 'ActivityController');
 Route::resource('goals', 'GoalController');
-Route::resource('settings', 'SettingsController');
+Route::resource('profile', 'SettingsController');
 Route::get('home', 'HealthMonitorController@index');
 Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
+
 Route::post('/nutrition/search', 'NutritionController@search');
 
 });

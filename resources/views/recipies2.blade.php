@@ -128,30 +128,6 @@
             </div>
 
     @endforeach
-
-	<!-- new ones -->
-	@foreach($recipies2 as $recipe)
-
-
-
-    <div class=" grid-item">
-              <div class="panel panel-border">
-                <div class="panel-heading"><a target="_blank" href="{{ $recipe['food_url'] }}"><span class="title">{{ $recipe['food_name'] }}</span></a></div>
-                <div class="panel-body">
-
-				<!--	<div><img src="https://source.unsplash.com/300x300/?{{$recipe['food_name']}}" style="width:100%; margin-bottom:10px;"/></div>-->
-                  <div class="list-group"><span class="badge badge-primary" style=" word-wrap: break-word;white-space: normal;line-height: 20px;">{{$recipe['food_description']}}</span></div>
-
-
-
-
-
-                  </div>
-                </div>
-              </div>
-
-
-    @endforeach
 </div>
 </div>
 </div>
