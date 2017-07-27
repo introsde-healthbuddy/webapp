@@ -10,32 +10,135 @@ use App\Goal;
 
 class GoalController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    private function getGoals()
-    {
+    private function getGoalDetails($id){
+
+        $goals =  $this->getGoals();
+        $found = array();
+
+        foreach($goals as $goal){
+            if($goal->id == $id)
+            {
+                $found = $goal;
+            }
+        }
+
+        return $found;
+    }
+
+    private function getGoals(){
+
         try{
+            $user = \Auth::user();
+            $foreign_id = $user->foreign_id;
 
-            $userId = \DB::table('user_mapping')->where('user_id_php', \Auth::user()->id)->value('user_id_java');;
+            $endpoint = env('PROCESS_CENTRIC_ENDPOINT');
 
-            $endpoint = 'https://healthbuddy-businesslogic.herokuapp.com/introsde/businessLogic/getGoals';
-            $client = new Client();
-            $response = $client->get($endpoint);
+            $client = new Client(['base_uri' => $endpoint]);
 
-            $goals = json_decode($response->getBody()->getContents());
-            //dd($goals);
-            return $goals;
+            $response = $client->request('GET', '/goal'.'/'.$foreign_id , [
+                'headers' => ['Content-Type' => 'application/xml'],
+                'timeout' => 120
+            ]);
 
+            if($response->getStatusCode() == 200)
+            {
+                $response = simplexml_load_string($response->getBody()->getContents());
+
+                $goals = array();
+                foreach($response as $goal)
+                {
+                    $goals[] = (object)array('id' => (int)$goal->idGoal, 'name' => (string)$goal->name, 'type' => (string)$goal->type, 'deadline' => (string)$goal->deadline, 'is_completed' => (int)$goal->is_completed);
+                }
+
+                return $goals;
+
+            }
+
+            dd('Error: '.$response);
         }
         catch(GuzzleException $e){
+            dd($e->getMessage());
+        }
 
-            \Session::flash('message', $e->getMessage()); 
-            \Session::flash('alert-class', 'alert-danger'); 
+    }
 
-           return false;
+    private function createGoal($data){
+
+        try{
+            $user = \Auth::user();
+            $foreign_id = $user->foreign_id;
+
+            $endpoint = env('PROCESS_CENTRIC_ENDPOINT');
+
+            $client = new Client(['base_uri' => $endpoint]);
+
+            $body = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><goal></goal>');
+            $body->addChild('name', $data['name']);
+            $body->addChild('type', $data['type']);
+            $body->addChild('deadline', $data['deadline']);
+            $body->addChild('is_completed', $data['is_completed']);
+            $body = $body->asXML();
+
+            //dd($body);
+
+            $response = $client->request('POST', '/goal'.'/'.$foreign_id, [
+                'headers' => ['Content-Type' => 'application/xml'],
+                'timeout' => 120,
+                'body' => $body
+            ]);
+
+            if($response->getStatusCode() == 200)
+            {
+                $response = simplexml_load_string($response->getBody()->getContents());
+                return $response;
+            }
+
+            dd('Error: '.$response);
+            //abort(403, 'Error :'.$response);
+        }
+        catch(GuzzleException $e){
+            dd($e->getMessage());
+        }
+
+    }
+
+    private function updateGoal($data){
+
+        try{
+            $user = \Auth::user();
+            $foreign_id = $user->foreign_id;
+
+            $endpoint = env('PROCESS_CENTRIC_ENDPOINT');
+
+            $client = new Client(['base_uri' => $endpoint]);
+
+            $body = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><goal></goal>');
+            $body->addChild('idGoal', $data['id']);
+            $body->addChild('name', $data['name']);
+            $body->addChild('type', $data['type']);
+            $body->addChild('deadline', $data['deadline']);
+            $body->addChild('is_completed', $data['is_completed']);
+            $body = $body->asXML();
+
+            //dd($body);
+
+            $response = $client->request('PUT', '/goal'.'/'.$foreign_id, [
+                'headers' => ['Content-Type' => 'application/xml'],
+                'timeout' => 120,
+                'body' => $body
+            ]);
+
+            if($response->getStatusCode() == 200)
+            {
+                $response = simplexml_load_string($response->getBody()->getContents());
+                return $response;
+            }
+
+            dd('Error: '.$response);
+            //abort(403, 'Error :'.$response);
+        }
+        catch(GuzzleException $e){
+            dd($e->getMessage());
         }
 
     }
@@ -44,7 +147,8 @@ class GoalController extends Controller
     public function index()
     {
 
-        $goals = \DB::select('SELECT * FROM goals WHERE user_id = :user_id ORDER BY expiry', ['user_id' => \Auth::user()->id]);
+        $goals = $this->getGoals();
+        //$goals = \DB::select('SELECT * FROM goals WHERE user_id = :user_id ORDER BY expiry', ['user_id' => \Auth::user()->id]);
         return view('goals', ['goals' => $goals]);
 
     }
@@ -56,7 +160,7 @@ class GoalController extends Controller
      */
     public function create()
     {
-        
+
 
         return view('goals-create-form');
     }
@@ -73,23 +177,20 @@ class GoalController extends Controller
 
             'name' => 'required',
             'type' => 'required',
-            'description' => 'required',
-            'expiry' => 'required',
-            'completed' => 'required'
+            'deadline' => 'required',
+            'is_completed' => 'required'
         ]);
 
         $input['name'] = $request->input('name');
         $input['type'] = $request->input('type');
-        $input['description'] = $request->input('description');
-        $input['expiry'] = $request->input('expiry');
-        $input['completed'] = $request->input('completed');
-        $input['user_id'] = \Auth::user()->id;
+        $input['deadline'] = $request->input('deadline');
+        $input['is_completed'] = $request->input('is_completed');
 
 
+        $this->createGoal($input);
+        //\App\Goal::create($input);
 
-        \App\Goal::create($input);
-
-        \Session::flash('alert-class', 'alert-success'); 
+        \Session::flash('alert-class', 'alert-success');
         return \Redirect::action('GoalController@index')->with('message', 'Goal successfully created.');
 
 
@@ -104,7 +205,7 @@ class GoalController extends Controller
      */
     public function show($id)
     {
-        
+
     }
 
     /**
@@ -115,7 +216,8 @@ class GoalController extends Controller
      */
     public function edit($id)
     {
-        $goal = \App\Goal::find( $id );
+        //$goal = \App\Goal::find( $id );
+        $goal = $this->getGoalDetails($id);
         return view('goals-edit-form', ['goal' => $goal]);
     }
 
@@ -132,24 +234,20 @@ class GoalController extends Controller
 
             'name' => 'required',
             'type' => 'required',
-            'description' => 'required',
-            'expiry' => 'required',
-            'completed' => 'required'
+            'deadline' => 'required',
+            'is_completed' => 'required'
         ]);
 
-        $goal = \App\Goal::find( $id );
+        $input['id'] = $id;
+        $input['name'] = $request->input('name');
+        $input['type'] = $request->input('type');
+        $input['deadline'] = $request->input('deadline');
+        $input['is_completed'] = $request->input('is_completed');
 
-        $goal->name = $request->input('name');
-        $goal->type = $request->input('type');
-        $goal->description = $request->input('description');
-        $goal->expiry = $request->input('expiry');
-        $goal->completed = $request->input('completed');
-        $goal->user_id = \Auth::user()->id;
+        $this->updateGoal($input);
 
-        $goal->save();
-
-        \Session::flash('alert-class', 'alert-success'); 
-        return \Redirect::action('GoalController@index')->with('message', 'Goal updated deleted.'); 
+        \Session::flash('alert-class', 'alert-success');
+        return \Redirect::action('GoalController@index')->with('message', 'Goal updated deleted.');
 
 
 
@@ -167,7 +265,7 @@ class GoalController extends Controller
         $goal = \App\Goal::find( $id );
         $goal->delete();
 
-        \Session::flash('alert-class', 'alert-success'); 
-        return \Redirect::action('GoalController@index')->with('message', 'Goal successfully deleted.'); 
+        \Session::flash('alert-class', 'alert-success');
+        return \Redirect::action('GoalController@index')->with('message', 'Goal successfully deleted.');
     }
 }

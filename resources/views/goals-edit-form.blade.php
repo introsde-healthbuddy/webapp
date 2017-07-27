@@ -11,7 +11,7 @@
             	<a href="{{ action('GoalController@create') }}" class="btn btn-space btn-primary btn-lg"> Create Goal &nbsp;<i class="icon icon-left mdi mdi-plus"></i></a>
             </span>
 
-            
+
 
             @include('partials.quote')
 	</div>
@@ -21,7 +21,7 @@
 
     <div class="col-sm-12">
       <div class="panel panel-default panel-table be-custom-panel">
-        
+
         <div class="panel-body">
 
           @include('partials.errors')
@@ -52,27 +52,22 @@
                         </select>
                       </div>
                     </div>
-                    <div class="form-group">
-                      <label class="col-sm-3 control-label">Description</label>
-                      <div class="col-sm-6">
-                        <textarea id="description" name="description" class="form-control" required>{{ $goal->description }}</textarea>
-                      </div>
-                    </div>
+
                     <div class="form-group">
                       <label class="col-sm-3 control-label"> Deadline </label>
                       <div class="col-md-3 col-xs-7">
-                        <div data-min-view="2" data-date-format="yyyy-mm-dd" class="input-group date datetimepicker">
-                          <input name="expiry" id="expiry" size="16" type="text" value="{{ $goal->expiry}}" class="form-control"><span class="input-group-addon btn btn-primary"><i class="icon-th mdi mdi-calendar"></i></span>
+                        <div data-min-view="2" data-date-format="dd/mm/yyyy" class="input-group date datetimepicker">
+                          <input name="deadline" id="expiry" size="16" type="text" value="{{ $goal->deadline}}" class="form-control"><span class="input-group-addon btn btn-primary"><i class="icon-th mdi mdi-calendar"></i></span>
                         </div>
                       </div>
                     </div>
                     <div class="form-group">
                       <label class="col-sm-3 control-label">Completed</label>
                       <div class="col-sm-6">
-                        <select name="completed" id="completed" class="form-control" required>
-                          
+                        <select name="is_completed" id="completed" class="form-control" required>
 
-                          @if ($goal->completed)
+
+                          @if ($goal->is_completed)
                               <option value="1" selected>Yes</option>
                               <option value="0">No</option>
                           @else
@@ -106,4 +101,3 @@
 
 
 @stop
-

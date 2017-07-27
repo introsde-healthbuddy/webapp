@@ -11,7 +11,7 @@
             	<a href="{{ action('GoalController@create') }}" class="btn btn-space btn-primary btn-lg"> Create Goal &nbsp;<i class="icon icon-left mdi mdi-plus"></i></a>
             </span>
 
-            
+
 
             @include('partials.quote')
 	</div>
@@ -21,7 +21,7 @@
 
     <div class="col-sm-12">
       <div class="panel panel-default panel-table be-custom-panel">
-        
+
         <div class="panel-body">
 
           @include('partials.errors')
@@ -34,8 +34,6 @@
                 <tr>
                   <th style="width:40%;">Goal</th>
                   <th style="width:15%;">Type</th>
-                  <th style="width:25%;">Description</th>
-                  
                   <th style="width:10%;">Deadline</th>
                   <th style="width:10%;">Completed</th>
                 </tr>
@@ -46,9 +44,8 @@
                 <tr>
                   <td class="cell-detail"><span>{{ $goal->name }}</span></td>
                   <td class="cell-detail"> <span>{{ $goal->type }}</span></td>
-                  <td class="cell-detail">{{ $goal->description }}</td>
-                  <td class="cell-detail"><span>{{ $goal->expiry}}</span></td>
-                  <td class="cell-detail"><span><?php if($goal->completed){ echo 'Yes';}else{echo 'No';} ?></span></td>
+                  <td class="cell-detail"><span>{{ $goal->deadline}}</span></td>
+                  <td class="cell-detail"><span><?php if($goal->is_completed){ echo 'Yes';}else{echo 'No';} ?></span></td>
                   <td class="text-right">
                     <div class="btn-group btn-hspace">
                       <button type="button" data-toggle="dropdown" class="btn btn-default dropdown-toggle">Manage <span class="icon-dropdown mdi mdi-chevron-down"></span></button>
@@ -70,11 +67,11 @@
                     </div>
                   </td>
                 </tr>
-                    
+
                 @endforeach
-                
-                
-               
+
+
+
               </tbody>
             </table>
           </div>
@@ -94,4 +91,3 @@
 
 
 @stop
-

@@ -5,11 +5,11 @@
 <div class="row">
 	<div class="page-head">
 
-            <h2 class="page-head-title" style="display:inline;">Activities</h2>
+            <h2 class="page-head-title" style="display:inline;">Log Health Measure</h2>
 
-            <span style="float:right; padding-top:10px;">
+            <!-- <span style="float:right; padding-top:10px;">
             	<a href="{{ action('GoalController@create') }}" class="btn btn-space btn-primary btn-lg"> Add Activity &nbsp;<i class="icon icon-left mdi mdi-plus"></i></a>
-            </span>
+            </span> -->
 
 
 
@@ -32,26 +32,31 @@
               <div class="panel panel-default panel-border-color panel-border-color-primary">
                 <div class="panel-heading"></div>
                 <div class="panel-body">
-                  <form action="{{ action('ActivityController@store')}}" method="POST" style="border-radius: 0px;" class="form-horizontal group-border-dashed">
+                  <form action="{{ action('HealthMonitorController@store')}}" method="POST" style="border-radius: 0px;" class="form-horizontal group-border-dashed">
                   {!! csrf_field() !!}
+
                     <div class="form-group">
-                      <label class="col-sm-3 control-label">Name</label>
+                      <label class="col-sm-3 control-label">Health Measure</label>
                       <div class="col-sm-6">
-                        <input name="name" id="name" type="text" class="form-control" required>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="col-sm-3 control-label">Type</label>
-                      <div class="col-sm-6">
-                        <select name="type" id="type" class="form-control" required>
-                          <option>Health</option>
-                          <option>Lifestyle</option>
-                          <option>Nutrition</option>
-                          <option>Exercise</option>
-                          <option>Sleep</option>
+                        <select name="healthmeasure" id="type" class="form-control" required>
+
+                          		<option value="weight">Weight</option>
+								<option value="height">Height</option>
+								<option value="calories intake">Calories Intake</option>
+								<option value="calories burnt">Calories burnt</option>
+
+
                         </select>
                       </div>
                     </div>
+
+					<div class="form-group">
+                      <label class="col-sm-3 control-label">Value</label>
+                      <div class="col-sm-6">
+                        <input name="value" id="name" type="text" class="form-control" required>
+                      </div>
+                    </div>
+
                     <div class="form-group">
                       <label class="col-sm-3 control-label"> Date </label>
                       <div class="col-md-3 col-xs-7">
@@ -60,15 +65,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="form-group">
-                      <label class="col-sm-3 control-label">Completed</label>
-                      <div class="col-sm-6">
-                        <select name="is_completed" id="completed" class="form-control" required>
-                          <option value="1">Yes</option>
-                          <option value="0">No</option>
-                        </select>
-                      </div>
-                    </div>
+
 
                     <div class="form-group">
                       <label class="col-sm-3 control-label"></label>

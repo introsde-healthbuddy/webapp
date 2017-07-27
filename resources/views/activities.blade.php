@@ -11,7 +11,7 @@
               <a href="{{ action('ActivityController@create') }}" class="btn btn-space btn-primary btn-lg"> Add Activity &nbsp;<i class="icon icon-left mdi mdi-plus"></i></a>
             </span>
 
-            
+
 
             @include('partials.quote')
   </div>
@@ -21,7 +21,7 @@
 
     <div class="col-sm-12">
       <div class="panel panel-default panel-table be-custom-panel">
-        
+
         <div class="panel-body">
 
           @include('partials.errors')
@@ -34,10 +34,6 @@
                 <tr>
                   <th style="width:25%;">Activity</th>
                   <th style="width:15%;">Type</th>
-                  <th style="width:15%;">Area</th>
-                  <th style="width:30%;">Description</th>
-                  
-                  
                   <th style="width:10%;">Deadline</th>
                   <th style="width:5%;">Completed</th>
                 </tr>
@@ -48,10 +44,8 @@
                 <tr>
                   <td class="cell-detail"><span>{{ $activity->name }}</span></td>
                   <td class="cell-detail"> <span>{{ $activity->type }}</span></td>
-                  <td class="cell-detail"> <span>{{ $activity->area }}</span></td>
-                  <td class="cell-detail">{{ $activity->description }}</td>
-                  <td class="cell-detail"><span>{{ $activity->expiry}}</span></td>
-                  <td class="cell-detail"><span><?php if($activity->completed){ echo 'Yes';}else{echo 'No';} ?></span></td>
+                  <td class="cell-detail"><span>{{ $activity->date}}</span></td>
+                  <td class="cell-detail"><span><?php if($activity->is_completed){ echo 'Yes';}else{echo 'No';} ?></span></td>
                   <td class="text-right">
                     <div class="btn-group btn-hspace">
                       <button type="button" data-toggle="dropdown" class="btn btn-default dropdown-toggle">Manage <span class="icon-dropdown mdi mdi-chevron-down"></span></button>
@@ -73,11 +67,11 @@
                     </div>
                   </td>
                 </tr>
-                    
+
                 @endforeach
-                
-                
-               
+
+
+
               </tbody>
             </table>
           </div>
@@ -97,4 +91,3 @@
 
 
 @stop
-

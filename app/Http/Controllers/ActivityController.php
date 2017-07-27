@@ -8,6 +8,139 @@ use GuzzleHttp\Client;
 
 class ActivityController extends Controller
 {
+    private function getActivityDetails($id){
+
+        $activities =  $this->getActivities();
+        $found = array();
+
+        foreach($activities as $activity){
+            if($activity->id == $id)
+            {
+                $found = $activity;
+            }
+        }
+
+        return $found;
+    }
+
+    private function getActivities(){
+
+        try{
+            $user = \Auth::user();
+            $foreign_id = $user->foreign_id;
+
+            $endpoint = env('PROCESS_CENTRIC_ENDPOINT');
+
+            $client = new Client(['base_uri' => $endpoint]);
+
+            $response = $client->request('GET', '/activity'.'/'.$foreign_id , [
+                'headers' => ['Content-Type' => 'application/xml'],
+                'timeout' => 120
+            ]);
+
+            if($response->getStatusCode() == 200)
+            {
+                $response = simplexml_load_string($response->getBody()->getContents());
+
+                $activities = array();
+                foreach($response as $activity)
+                {
+                    $activities[] = (object)array('id' => (int)$activity->idActivity, 'name' => (string)$activity->name, 'type' => (string)$activity->type, 'date' => (string)$activity->date, 'is_completed' => (int)$activity->is_completed);
+                }
+
+                return $activities;
+
+            }
+
+            dd('Error: '.$response);
+        }
+        catch(GuzzleException $e){
+            dd($e->getMessage());
+        }
+
+    }
+
+    private function createActivity($data){
+
+        try{
+            $user = \Auth::user();
+            $foreign_id = $user->foreign_id;
+
+            $endpoint = env('PROCESS_CENTRIC_ENDPOINT');
+
+            $client = new Client(['base_uri' => $endpoint]);
+
+            $body = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><activity></activity>');
+            $body->addChild('name', $data['name']);
+            $body->addChild('type', $data['type']);
+            $body->addChild('date', $data['date']);
+            $body->addChild('is_completed', $data['is_completed']);
+            $body = $body->asXML();
+
+            //dd($body);
+
+            $response = $client->request('POST', '/activity'.'/'.$foreign_id, [
+                'headers' => ['Content-Type' => 'application/xml'],
+                'timeout' => 120,
+                'body' => $body
+            ]);
+
+            if($response->getStatusCode() == 200)
+            {
+                $response = simplexml_load_string($response->getBody()->getContents());
+                return $response;
+            }
+
+            dd('Error: '.$response);
+            //abort(403, 'Error :'.$response);
+        }
+        catch(GuzzleException $e){
+            dd($e->getMessage());
+        }
+
+    }
+
+    private function updateActivity($data){
+
+        try{
+            $user = \Auth::user();
+            $foreign_id = $user->foreign_id;
+
+            $endpoint = env('PROCESS_CENTRIC_ENDPOINT');
+
+            $client = new Client(['base_uri' => $endpoint]);
+
+            $body = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><activity></activity>');
+            $body->addChild('idActivity', $data['id']);
+            $body->addChild('name', $data['name']);
+            $body->addChild('type', $data['type']);
+            $body->addChild('date', $data['date']);
+            $body->addChild('is_completed', $data['is_completed']);
+            $body = $body->asXML();
+
+            //dd($body);
+
+            $response = $client->request('PUT', '/activity'.'/'.$foreign_id, [
+                'headers' => ['Content-Type' => 'application/xml'],
+                'timeout' => 120,
+                'body' => $body
+            ]);
+
+            if($response->getStatusCode() == 200)
+            {
+                $response = simplexml_load_string($response->getBody()->getContents());
+                return $response;
+            }
+
+            dd('Error: '.$response);
+            //abort(403, 'Error :'.$response);
+        }
+        catch(GuzzleException $e){
+            dd($e->getMessage());
+        }
+
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,13 +148,8 @@ class ActivityController extends Controller
      */
     public function index()
     {
-        // $endpoint = env('API_ACTIVITY');
-        // $client = new Client();
-        // $response = $client->get($endpoint, ['headers' => ['Accept' => 'application/json']]);
-        // $activities = json_decode($response->getBody()->getContents());
-        // return view('activities', ['activities' => $activities]);
-
-        $activities = \DB::select('SELECT * FROM activities WHERE user_id = :user_id ORDER BY expiry', ['user_id' => \Auth::user()->id]);
+        $activities = $this->getActivities();
+        //$activities = \DB::select('SELECT * FROM activities WHERE user_id = :user_id ORDER BY expiry', ['user_id' => \Auth::user()->id]);
         return view('activities', ['activities' => $activities]);
 
     }
@@ -48,25 +176,22 @@ class ActivityController extends Controller
 
             'name' => 'required',
             'type' => 'required',
-            'description' => 'required',
-            'area' => 'required',
-            'expiry' => 'required',
-            'completed' => 'required'
+            'date' => 'required',
+            'is_completed' => 'required'
         ]);
 
         $input['name'] = $request->input('name');
         $input['type'] = $request->input('type');
-        $input['description'] = $request->input('description');
-        $input['area'] = $request->input('area');
-        $input['expiry'] = $request->input('expiry');
-        $input['completed'] = $request->input('completed');
-        $input['user_id'] = \Auth::user()->id;
+        $input['date'] = $request->input('date');
+        $input['is_completed'] = $request->input('is_completed');
+
+        $this->createActivity($input);
 
 
 
-        \App\Activity::create($input);
+        //\App\Activity::create($input);
 
-        \Session::flash('alert-class', 'alert-success'); 
+        \Session::flash('alert-class', 'alert-success');
         return \Redirect::action('ActivityController@index')->with('message', 'Activity successfully created.');
     }
 
@@ -89,7 +214,8 @@ class ActivityController extends Controller
      */
     public function edit($id)
     {
-        $activity = \App\Activity::find( $id );
+        $activity = $this->getActivityDetails($id);
+        //$activity = \App\Activity::find( $id );
         return view('activity-edit-form', ['activity' => $activity]);
     }
 
@@ -106,27 +232,33 @@ class ActivityController extends Controller
 
             'name' => 'required',
             'type' => 'required',
-            'description' => 'required',
-            'expiry' => 'required',
-            'area' => 'required',
-            'completed' => 'required'
+            'date' => 'required',
+            'is_completed' => 'required'
         ]);
 
-        $activity = \App\Activity::find( $id );
+        $input['id'] = $id;
+        $input['name'] = $request->input('name');
+        $input['type'] = $request->input('type');
+        $input['date'] = $request->input('date');
+        $input['is_completed'] = $request->input('is_completed');
 
-        $activity->name = $request->input('name');
-        $activity->type = $request->input('type');
-        $activity->description = $request->input('description');
-        $activity->expiry = $request->input('expiry');
-        $activity->area = $request->input('area');
-        $activity->completed = $request->input('completed');
-        $activity->user_id = \Auth::user()->id;
+        // $activity = \App\Activity::find( $id );
+        //
+        // $activity->name = $request->input('name');
+        // $activity->type = $request->input('type');
+        // $activity->description = $request->input('description');
+        // $activity->expiry = $request->input('expiry');
+        // $activity->area = $request->input('area');
+        // $activity->completed = $request->input('completed');
+        // $activity->user_id = \Auth::user()->id;
+        //
+        // $activity->save();
 
-        $activity->save();
+        $this->updateActivity($input);
 
-        \Session::flash('alert-class', 'alert-success'); 
-        return \Redirect::action('ActivityController@index')->with('message', 'Activity updated deleted.'); 
-        
+        \Session::flash('alert-class', 'alert-success');
+        return \Redirect::action('ActivityController@index')->with('message', 'Activity updated successfully.');
+
     }
 
     /**
@@ -140,7 +272,7 @@ class ActivityController extends Controller
         $activity = \App\Activity::find( $id );
         $activity->delete();
 
-        \Session::flash('alert-class', 'alert-success'); 
-        return \Redirect::action('ActivityController@index')->with('message', 'Activity successfully deleted.'); 
+        \Session::flash('alert-class', 'alert-success');
+        return \Redirect::action('ActivityController@index')->with('message', 'Activity successfully deleted.');
     }
 }
